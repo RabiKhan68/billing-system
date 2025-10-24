@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Pacific Leather Compant - Billing Sheet</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <h1>PACIFIC LEATHER COMPANY — Simple Billing</h1>
+
+    <div class="controls no-print">
+        <button id="addRowBtn">Add Row</button>
+        <button id="clearBtn">Clear Rows</button>
+        <div class="checkbox">
+            <input type="checkbox" id="salesInvoiceChk" />
+            <label for="salesInvoiceChk">Sales Tax Invoice (placeholder)</label>
+        </div>
+        <div style="margin-left:auto;" class="small">
+            GST %: <input id="gstInput" type="number" min="0" step="0.01" value="18"
+                style="width:70px; display:inline-block;" />
+        </div>
+        <button id="printBtn">Print Bill</button>
+    </div>
+
+    <table id="itemsTable" aria-label="items">
+        <thead>
+            <tr>
+                <th style="width:90px">PLC Date</th>
+                <th style="width:80px">PLC GP#</th>
+                <th style="width:90px">P.G Date</th>
+                <th style="width:60px">P.G#</th>
+                <th>ARTICLE</th>
+                <th style="width:70px">PC's</th>
+                <th style="width:110px">SQ.FT</th>
+                <th style="width:80px">RATE</th>
+                <th style="width:110px">AMOUNT</th>
+                <th class="actions no-print">Actions</th>
+            </tr>
+        </thead>
+        <tbody id="itemsBody">
+            <!-- rows inserted here -->
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="5" class="right">TOTAL:</td>
+                <td class="num" id="totalPcs">0</td>
+                <td class="num" id="totalSqft">0.00</td>
+                <td></td>
+                <td class="num" id="totalAmount">0.00</td>
+                <td class="no-print"></td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div class="summary">
+        <div>
+            <div><label>Subtotal:</label> <input id="subtotal" readonly /></div>
+            <div style="margin-top:6px;"><label>GST (<span id="gstPercentLabel">18</span>%):</label> <input
+                    id="gstAmount" readonly /></div>
+            <div style="margin-top:6px;"><label>Grand Total:</label> <input id="grandTotal" readonly /></div>
+        </div>
+    </div>
+
+    <p class="small" style="margin-top:18px;">Tip: use "Add Row" to insert items. Amount will auto-calc as <em>SQ.FT ×
+            RATE</em>. Totals and GST update automatically.</p>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,273 @@
+:root {
+    /* Light theme colors */
+    --bg-color: #ffffff;
+    --text-color: #222;
+    --border-color: #999;
+    --input-bg: #fff;
+    --input-border: #bbb;
+    --header-bg: #f2f2f2;
+    --summary-bg: #fafafa;
+    --button-bg: #0078d4;
+    --button-text: #fff;
+    --button-hover: #005ea6;
+}
+
+/* 🌙 Dark theme support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color: #121212;
+        --text-color: #eaeaea;
+        --border-color: #555;
+        --input-bg: #1e1e1e;
+        --input-border: #444;
+        --header-bg: #2a2a2a;
+        --summary-bg: #1b1b1b;
+        --button-bg: #0a84ff;
+        --button-text: #fff;
+        --button-hover: #0071e3;
+    }
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 16px;
+    color: var(--text-color);
+    background: var(--bg-color);
+    transition: background 0.3s, color 0.3s;
+}
+
+/* Headings */
+h1 {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: clamp(20px, 4vw, 26px);
+}
+
+/* Control Buttons */
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+button {
+    padding: 8px 14px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    transition: background 0.2s ease;
+}
+
+button:hover {
+    background-color: var(--button-hover);
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 8px;
+    background-color: var(--bg-color);
+}
+
+th,
+td {
+    border: 1px solid var(--border-color);
+    padding: 6px 8px;
+    font-size: 13px;
+    text-align: left;
+    color: var(--text-color);
+}
+
+th {
+    background: var(--header-bg);
+    text-align: center;
+}
+
+.num {
+    text-align: right;
+}
+
+.actions {
+    width: 86px;
+    text-align: center;
+}
+
+/* Inputs */
+input[type="text"],
+input[type="number"],
+input[type="date"] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 6px;
+    font-size: 13px;
+    border: 1px solid var(--input-border);
+    background-color: var(--input-bg);
+    border-radius: 4px;
+    color: var(--text-color);
+}
+
+input[type="number"]::-webkit-inner-spin-button {
+    opacity: 0.4;
+}
+
+/* Summary */
+.summary {
+    display: flex;
+    gap: 16px;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+.summary label {
+    font-weight: 600;
+    margin-right: 6px;
+}
+
+.summary input {
+    width: 120px;
+    text-align: right;
+    padding: 6px;
+    border: 1px solid var(--input-border);
+    border-radius: 4px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+}
+
+/* Small text */
+.small {
+    font-size: 12px;
+    color: #777;
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+    body {
+        margin: 8px;
+    }
+
+    th, td {
+        font-size: 12px;
+        padding: 4px;
+    }
+
+    button {
+        flex: 1;
+        min-width: 100px;
+    }
+
+    .controls {
+        justify-content: center;
+    }
+
+    .summary {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 8px;
+    }
+
+    .summary input {
+        width: 100%;
+        max-width: 180px;
+    }
+}
+
+/* Print hide UI controls */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+
+    body {
+        margin: 0;
+        background: #fff;
+        color: #000;
+    }
+
+    table {
+        page-break-inside: auto;
+    }
+
+    tr {
+        page-break-inside: avoid;
+        page-break-after: auto;
+    }
+
+    button {
+        display: none;
+    }
+}
+
+/* Responsive stacked table layout for small screens */
+@media (max-width: 768px) {
+    table,
+    thead,
+    tbody,
+    th,
+    td,
+    tr {
+        display: block;
+    }
+
+    thead tr {
+        display: none; /* Hide table header */
+    }
+
+    tbody tr {
+        margin-bottom: 12px;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        padding: 8px;
+        background-color: var(--summary-bg);
+    }
+
+    td {
+        border: none;
+        border-bottom: 1px solid var(--border-color);
+        position: relative;
+        padding-left: 50%;
+        text-align: left;
+        font-size: 13px;
+    }
+
+    td:last-child {
+        border-bottom: none;
+    }
+
+    td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 8px;
+        width: 45%;
+        padding-right: 8px;
+        font-weight: bold;
+        white-space: nowrap;
+        color: var(--text-color);
+    }
+
+    .num {
+        text-align: left;
+    }
+
+    /* Adjust button layout for mobile */
+    .controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    button {
+        width: 100%;
+    }
+
+    .summary {
+        flex-direction: column;
+        align-items: flex-end;
+    }
+}
