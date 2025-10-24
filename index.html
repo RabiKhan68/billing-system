@@ -38,6 +38,7 @@
             flex-wrap: wrap;
             gap: 12px;
             margin-bottom: 18px;
+            margin-top: 10px;
             background: #fff;
             border: 1px solid #ddd;
             padding: 10px 15px;
@@ -68,6 +69,16 @@
 
         button:active {
             background-color: #004b86;
+        }
+
+        /* ============ COMPANY-CHECK =========== */
+        .company-header {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            text-decoration: underline;
         }
 
         /* ============ TABLES ============ */
@@ -249,12 +260,21 @@
                 style="width:70px; display:inline-block;" />
         </div>
 
+        <div class="controls no-print">
+            <label for="companySelect">Select Company:</label>
+            <select id="companySelect">
+                <option value="pacific">Pacific Leather Company</option>
+                <option value="pakistani">Pakistani Global Tannery</option>
+            </select>
+        </div>
+
         <button id="printBillBtn">Print Bill</button>
         <button id="printInvoiceBtn">Print Sales Tax Invoice</button>
     </div>
 
     <!-- ================= BILL SECTION ================= -->
     <div id="billSection">
+        <h1 id="companyName" class="company-header"></h1>
         <table id="itemsTable">
             <thead>
                 <tr>
@@ -303,15 +323,27 @@
 
     <!-- ================= SALES TAX INVOICE ================= -->
     <div id="salesInvoiceSection" style="margin-top: 40px;">
+        <h1 id="companyNameInvoice" class="company-header"></h1>
         <h2>Sales Tax Invoice</h2>
 
         <div class="invoice-info" style="display:flex; flex-wrap:wrap; gap:40px;">
             <div class="supplier">
                 <h3>Supplier Details</h3>
-                <p><strong>Supplier Name:</strong> Pacific Leather Company</p>
-                <p><strong>Address:</strong> Plot Karachi</p>
-                <p><strong>NTN:</strong> 40-7</p>
-                <p><strong>STRN:</strong> 6</p>
+
+                <label for="supplierSelect" class="no-print"><strong>Select Supplier:</strong></label>
+                <select id="supplierSelect" class="no-print">
+                    <option value="none">None</option>
+                    <option value="pacific" data-address="Plot No.85 Sector 7-A, Korangi Industrial Area, Karachi"
+                        data-ntn="" data-strn="">Pacific Leather Company</option>
+                    <option value="pakistani" data-address="Plot # 85 7/A, Area Korangi Industrial Area, Karachi"
+                        data-ntn="" data-strn="">Pakistan Global Tannery</option>
+                </select>
+
+                <p><strong>Supplier Name:</strong><span id="supplierName"></span></p>
+                <p><strong>Address:</strong><span id="supplierAddress"></span></p>
+                <p><strong>NTN:</strong><span id="supplierNTN"></span></p>
+                <p><strong>STRN:</strong><span id="supplierSTRN"></span></p>
+
             </div>
 
             <div class="buyer">
@@ -320,6 +352,10 @@
                 <label>Address:</label> <input type="text" id="buyerAddress"><br>
                 <label>NTN:</label> <input type="text" id="buyerNTN"><br>
                 <label>STRN:</label> <input type="text" id="buyerSTRN"><br>
+            </div>
+            <div class="no-print" style="margin-top: 10px;">
+                <button id="addSalesRowBtn">Add Invoice Row</button>
+                <button id="clearSalesRowBtn">Clear Rows</button>
             </div>
         </div>
 
@@ -448,6 +484,21 @@
             updateTotals();
         });
 
+        // ---------- SUPPLIER AUTO-FILL ----------
+        const supplierSelect = document.getElementById("supplierSelect");
+        const supplierName = document.getElementById("supplierName");
+        const supplierAddress = document.getElementById("supplierAddress");
+        const supplierNTN = document.getElementById("supplierNTN");
+        const supplierSTRN = document.getElementById("supplierSTRN");
+
+        supplierSelect.addEventListener("change", () => {
+            const selected = supplierSelect.options[supplierSelect.selectedIndex];
+            supplierName.textContent = selected.textContent;
+            supplierAddress.textContent = selected.dataset.address;
+            supplierNTN.textContent = selected.dataset.ntn;
+            supplierSTRN.textContent = selected.dataset.strn;
+        });
+
         // ---------- SALES TAX INVOICE ----------
         const salesTaxBody = document.getElementById("salesTaxBody");
         const grandTotalTax = document.getElementById("grandTotalTax");
@@ -483,6 +534,31 @@
             amountInWords.textContent = numberToWords(Math.round(total)) + " Rupees Only";
         }
 
+        // ------------ ADD MUTLIPLE ROWS IN SALES TAX INVOICE -------------
+        const addSalesRowBtn = document.getElementById("addSalesRowBtn");
+        const clearSalesRowBtn = document.getElementById("clearSalesRowBtn");
+
+        addSalesRowBtn.addEventListener("click", addSalesTaxRow);
+        clearSalesRowBtn.addEventListener("click", () => {
+            salesTaxBody.innerHTML = "";
+            updateSalesTaxTotals();
+        });
+
+        function addSalesTaxRow() {
+            const newRow = document.createElement("tr");
+            newRow.innerHTML = `
+            <td><input type="number" class="qty"></td>
+        <td><input type="text" class="desc"></td>
+        <td><input type="number" class="unitPrice"></td>
+        <td><input type="text" readonly class="valueGoods"></td>
+        <td><input type="number" class="rateTax" value="18"></td>
+        <td><input type="text" readonly class="amountTax"></td>
+        <td><input type="number" class="furtherTax" value="0"></td>
+        <td><input type="text" readonly class="totalRow"></td>
+        `;
+        salesTaxBody.appendChild(newRow);
+        }
+
         function numberToWords(num) {
             const a = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
                 "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
@@ -501,13 +577,28 @@
         const billSection = document.getElementById("billSection");
         const invoiceSection = document.getElementById("salesInvoiceSection");
 
+        //get elements for company name handling
+        const companySelect = document.getElementById("companySelect");
+        const companyNameBill = document.getElementById("companyName");
+        const companyNameInvoice = document.getElementById("companyNameInvoice");
+
+        //get company name based on selection
+        function getCompanyName() {
+            const selected = companySelect.value;
+            if (selected === "pacific") return "PACIFIC LEATHER COMPANY";
+            if (selected === "pakistani") return "PAKISTANI GLOBAL TANNERY";
+            return "";
+        }
+
         document.getElementById("printBillBtn").addEventListener("click", () => {
+            companyNameBill.textContent = getCompanyName();
             billSection.classList.add("print-area");
             invoiceSection.classList.remove("print-area");
             window.print();
         });
 
         document.getElementById("printInvoiceBtn").addEventListener("click", () => {
+            companyNameInvoice.textContent = getCompanyName();
             invoiceSection.classList.add("print-area");
             billSection.classList.remove("print-area");
             window.print();
